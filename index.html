@@ -207,26 +207,42 @@
             border: 1px solid #e2e8f0;
         }
 
+        /* ===== УВЕЛИЧЕННАЯ И УДЛИНЕННАЯ КНОПКА ===== */
         .renew-btn {
             background: #ff6d2c;
             border: none;
             color: white;
-            font-size: 1rem;
-            font-weight: 700;
-            padding: 0.9rem 2rem;
-            border-radius: 60px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: 0.2s;
-            margin-top: 0.4rem;
-            box-shadow: 0 4px 8px rgba(255, 109, 44, 0.25);
-            letter-spacing: 0.3px;
-            display: inline-block;
+            transition: 0.25s ease;
             font-family: inherit;
+            display: inline-block;
+            width: 100%;               /* растягивается на всю доступную ширину → очень длинная */
+            padding: 1.2rem 1.5rem;    /* увеличенная вертикаль и горизонталь (кнопка выше) */
+            font-size: 1.35rem;        /* крупный текст для заметности */
+            border-radius: 80px;        /* более скруглённые края, солидный вид */
+            box-shadow: 0 10px 18px rgba(255, 109, 44, 0.3);
+            text-align: center;
+            margin-top: 0.8rem;
         }
 
         .renew-btn:hover {
             background: #e55a1e;
-            transform: scale(1.02);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 22px rgba(255, 109, 44, 0.35);
+        }
+
+        .renew-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Дополнительная адаптация: на очень узких экранах сохраняем ширину 100% и немного уменьшаем паддинг */
+        @media (max-width: 480px) {
+            .renew-btn {
+                padding: 1rem 1rem;
+                font-size: 1.2rem;
+            }
         }
 
         @media (max-width: 640px) {
@@ -291,11 +307,11 @@
                 <div class="square-image-container">
                     <!-- Замените src на путь к вашему квадратному изображению -->
                     <img src="img/avast.jpg" 
-                         alt="Квадратная иллюстрация">
+                         alt="Квадратная иллюстрация Avast">
                 </div>
             </div>
 
-               
+            <!-- УВЕЛИЧЕННАЯ И УДЛИНЕННАЯ КНОПКА (теперь width:100% + крупный паддинг) -->
             <button class="renew-btn">Renew subscription</button>
         </div>
     </div>

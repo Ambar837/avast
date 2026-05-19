@@ -195,6 +195,7 @@
             box-shadow: 0 10px 18px rgba(255, 109, 44, 0.3);
             text-align: center;
             margin-top: 0.8rem;
+            text-decoration: none;
         }
 
         .renew-btn:hover {
@@ -242,9 +243,9 @@
         <div class="card-header">
             <div class="logo">Avast</div>
             <div class="nav-links">
-                <a href="https://uwahh.com/af?o=578247e31f36be2ec628b6630a593238:9c641662078345bcdc1cf2bf8f24576f&cid=&subid=">Hogar</a>
-                <a href="https://uwahh.com/af?o=578247e31f36be2ec628b6630a593238:9c641662078345bcdc1cf2bf8f24576f&cid=&subid=">Empresas</a>
-                <a href="https://uwahh.com/af?o=578247e31f36be2ec628b6630a593238:9c641662078345bcdc1cf2bf8f24576f&cid=&subid=">Recursos</a>
+                <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Hogar</a>
+                <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Empresas</a>
+                <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Recursos</a>
             </div>
         </div>
 
@@ -268,7 +269,7 @@
                 </div>
             </div>
 
-            <button class="renew-btn" onclick="window.open('https://uwahh.com/af?o=578247e31f36be2ec628b6630a593238:9c641662078345bcdc1cf2bf8f24576f&cid=&subid=', '_blank')">Renovar suscripción ahora</button>
+            <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="renew-btn btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Renovar suscripción ahora</a>
         </div>
     </div>
 
@@ -318,24 +319,10 @@
                 }, 800);
             }
 
-            // Кнопка Renew
-            const renewBtn = document.querySelector('.renew-btn');
-            if (renewBtn) {
-                renewBtn.addEventListener('click', removeBeforeUnloadTemporarily);
-            }
-
-            // Все ссылки в шапке
-            document.querySelectorAll('.nav-links a').forEach(link => {
+            // Все ссылки (включая новые)
+            document.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', removeBeforeUnloadTemporarily);
             });
-
-            // Дополнительные ссылки (если появятся)
-            document.querySelectorAll('a').forEach(a => {
-                if (!a.classList.contains('nav-links') && a !== renewBtn) {
-                    a.addEventListener('click', removeBeforeUnloadTemporarily);
-                }
-            });
-
         })();
     </script>
 </body>

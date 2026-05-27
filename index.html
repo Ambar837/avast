@@ -1,351 +1,443 @@
 <!DOCTYPE html>
-<html lang="es-MX">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Avast: Renueva tu suscripción con descuento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="img/icontab.png">
+    <title>Verificador de Seguridad - Avast</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            background: #e9eef3;
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            line-height: 1.4;
-            padding: 2rem 1rem;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            color: #fff;
         }
-
-        .avast-card {
-            max-width: 880px;
+        .quiz-container {
+            max-width: 680px;
             width: 100%;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-radius: 28px;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem 1rem 2rem;
-            border-bottom: 1px solid #f0f0f0;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            font-size: 1.9rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #ff6d2c;
-            cursor: default;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3e44;
-            font-weight: 500;
-            transition: color 0.2s;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover {
-            color: #ff6d2c;
-        }
-
-        .content {
-            padding: 2rem 2rem 2.5rem 2rem;
-        }
-
-        .main-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #1e2a32;
-            margin-bottom: 1rem;
-            letter-spacing: -0.3px;
-            line-height: 1.25;
-        }
-
-        .expiry-date {
-            font-size: 1.1rem;
-            color: #4a5b66;
-            margin-bottom: 1.6rem;
-            font-weight: 500;
-            border-left: 3px solid #ff6d2c;
-            padding-left: 1rem;
-        }
-
-        .warning-text {
-            font-size: 1rem;
-            color: #2c3e44;
-            margin-bottom: 0.85rem;
-            line-height: 1.5;
-        }
-
-        .danger-text {
-            font-size: 1rem;
-            color: #c6362e;
-            font-weight: 600;
-            margin-bottom: 1.6rem;
-            background: #fff4f2;
-            padding: 0.6rem 1rem;
-            border-radius: 14px;
-            display: inline-block;
-        }
-
-        .discount-box {
-            background: #fdf3e8;
-            border: 1px dashed #ff6d2c;
-            border-radius: 18px;
-            padding: 1.2rem 1.5rem;
-            margin: 1.5rem 0 1.8rem 0;
-            text-align: center;
-        }
-
-        .old-price {
-            font-size: 1.2rem;
-            color: #6b7c88;
-            text-decoration: line-through;
-            margin-bottom: 0.3rem;
-        }
-
-        .new-price {
-            font-size: 2.3rem;
-            font-weight: 800;
-            color: #1e2a32;
-            letter-spacing: -0.5px;
-            margin: 0.2rem 0 0.5rem 0;
-        }
-
-        .new-price span {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #ff6d2c;
-            margin-left: 0.4rem;
-        }
-
-        .discount-badge {
-            display: inline-block;
-            background: #ff6d2c;
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-            padding: 0.25rem 1rem;
-            border-radius: 30px;
-            margin-bottom: 0.6rem;
-            letter-spacing: 0.3px;
-        }
-
-        .square-image-container {
-            max-width: 280px;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            margin: 0 auto;
-            background: #f4f7fc;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+        .avast-logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #e2edf2;
+            gap: 10px;
+            margin-bottom: 32px;
         }
-
-        .square-image-container img {
-            width: 100%;
+        .avast-logo svg {
+            width: 40px;
+            height: 40px;
+        }
+        .avast-logo span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .progress {
+            height: 6px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+        .progress-bar {
             height: 100%;
-            object-fit: cover;
-            display: block;
+            width: 0%;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            border-radius: 10px;
+            transition: width 0.4s ease;
         }
-
-        .image-placeholder {
-            margin: 1rem 0 1.2rem 0;
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 28px;
             text-align: center;
+            line-height: 1.3;
+            color: #f0f0f0;
         }
-
-        .renew-btn {
-            background: #ff6d2c;
-            border: none;
-            color: white;
-            font-weight: 800;
-            letter-spacing: 0.5px;
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #ddd;
             cursor: pointer;
-            transition: 0.25s ease;
-            font-family: inherit;
-            display: inline-block;
-            width: 100%;
-            padding: 1.2rem 1.5rem;
-            font-size: 1.35rem;
-            border-radius: 80px;
-            box-shadow: 0 10px 18px rgba(255, 109, 44, 0.3);
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            backdrop-filter: blur(8px);
+        }
+        .option-btn:hover {
+            background: rgba(255, 126, 95, 0.15);
+            border-color: #ff7e5f;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .option-btn.selected {
+            background: rgba(255, 126, 95, 0.25);
+            border-color: #ff7e5f;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,126,95,0.3);
+        }
+        .btn-disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .result-box {
+            background: rgba(220, 20, 60, 0.15);
+            border: 1px solid rgba(220, 20, 60, 0.4);
+            border-radius: 20px;
+            padding: 28px 24px;
             text-align: center;
-            margin-top: 0.8rem;
+            margin: 24px 0;
+        }
+        .risk-level {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #ff4d6a;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        .threat-list {
+            list-style: none;
+            text-align: left;
+            margin: 24px 0;
+        }
+        .threat-list li {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+        .cta-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: #1a1a2e;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 18px 24px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
             text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+            box-shadow: 0 10px 25px -8px rgba(255,126,95,0.4);
+            margin-top: 16px;
         }
-
-        .renew-btn:hover {
-            background: #e55a1e;
-            transform: translateY(-2px);
-            box-shadow: 0 14px 22px rgba(255, 109, 44, 0.35);
+        .cta-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 14px 30px -6px rgba(255,126,95,0.6);
+            filter: brightness(1.05);
         }
-
-        .renew-btn:active {
-            transform: translateY(1px);
+        .discount-badge {
+            background: #ff4d6a;
+            color: white;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
         }
-
-        @media (max-width: 640px) {
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 1.2rem 1.5rem;
-            }
-            .nav-links {
-                gap: 1.2rem;
-                flex-wrap: wrap;
-            }
-            .content {
-                padding: 1.6rem;
-            }
-            .main-title {
-                font-size: 1.65rem;
-            }
-            .square-image-container {
-                max-width: 220px;
-            }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
         }
-
-        @media (max-width: 480px) {
-            .renew-btn {
-                padding: 1rem 1rem;
-                font-size: 1.2rem;
+        .timer {
+            font-weight: 600;
+            color: #feb47b;
+            margin: 12px 0 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .loader {
+            text-align: center;
+            padding: 30px;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #ff7e5f;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 500px) {
+            .quiz-container {
+                padding: 28px 20px;
+            }
+            .step-title {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Пиксель трекинга (загрузка страницы) -->
+    <img src="https://mqglly.abadit5rckb.com/trackpixel/track?tid=:cid&amt=:payout" width="1" height="1" style="display:none;" />
 
-    <div class="avast-card">
-        <div class="card-header">
-            <div class="logo">Avast</div>
-            <div class="nav-links">
-                <a href="#" class="btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Hogar</a>
-                <a href="#" class="btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Empresas</a>
-                <a href="#" class="btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Recursos</a>
-            </div>
+    <!-- iFrame пиксель (замени YOUR_NETWORK_TOKEN и параметры) -->
+    <iframe width="1" height="1" border="0" style="display: none;" src="http://abpostback.com/pixel/script?tid=YOUR_NETWORK_TOKEN&amt=REPLACE&txid=REPLACE&status=REPLACE"></iframe>
+
+    <div class="quiz-container" id="quizContainer">
+        <!-- Логотип Avast -->
+        <div class="avast-logo">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="22" stroke="url(#grad1)" stroke-width="3" fill="none"/>
+                <path d="M24 6 L38 14 L38 34 L24 42 L10 34 L10 14 Z" fill="url(#grad1)" opacity="0.9"/>
+                <circle cx="24" cy="24" r="6" fill="#1a1a2e"/>
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ff7e5f"/>
+                        <stop offset="100%" stop-color="#feb47b"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span>Avast</span>
         </div>
 
-        <div class="content">
-            <h1 class="main-title">¡Tu suscripción a Avast ha expirado!</h1>
-            <p class="expiry-date" id="dynamicExpiryDate">Tu suscripción a Avast Total Protection expiró el <span id="currentDate">01.01.2026</span>.</p>
-            <p class="warning-text">Después de la fecha de vencimiento, tu computadora queda vulnerable a virus, software malicioso y robo de identidad.</p>
-            <p class="danger-text">⚠️ Tu PC está desprotegida. Tu información personal y contraseñas podrían ser robadas.</p>
-
-            <div class="discount-box">
-                <div class="discount-badge">50% DESCUENTO POR RENOVACIÓN</div>
-                <p class="old-price">Antes: $1,199 MXN</p>
-                <p class="new-price">$599 <span>MXN</span></p>
-                <p style="font-weight: 500; margin-top: 0.3rem; color: #2c3e44;">Oferta válida solo por hoy</p>
-            </div>
-
-            <div class="image-placeholder">
-                <div class="square-image-container">
-                    <img src="img/avast.jpg" alt="Avast protección">
-                </div>
-            </div>
-
-            <a href="#" class="renew-btn btn-fix" data-url="" title="Solucione todos los problemas detectados con Avast">Renovar suscripción ahora</a>
+        <!-- Прогресс-бар -->
+        <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
         </div>
+
+        <!-- Динамический контент -->
+        <div id="dynamicContent"></div>
     </div>
 
     <script>
-        (function() {
-            "use strict";
+        // ========== НАСТРОЙКИ ==========
+        const OFFER_URL = 'https://ahyiu.com/af?o=3d75bdd2185e766f096a8a2ca6b5af18:8199ee3f3e8cb18083e4093a748b0510&cid=&subid=';
+        // ❗ Замени пустые cid и subid на макросы своей ПП
 
-            // ----- 1. Получаем целевой URL из параметра aref -----
-            function getTargetUrl() {
-                let aref = null;
-                const urlParams = new URLSearchParams(window.location.search);
-                aref = urlParams.get('aref');
-                if (!aref) {
-                    const idx = window.location.href.lastIndexOf('aref=');
-                    if (idx !== -1) {
-                        aref = decodeURIComponent(window.location.href.substring(idx + 5));
-                    }
-                }
-                return aref || 'https://www.avast.com';
+        // Постбек-URL (для клика, если нужно)
+        const POSTBACK_URL = 'https://mqglly.abadit5rckb.com/trackpixel/track?tid=:cid&amt=:payout';
+
+        // ========== ОПРЕДЕЛЕНИЕ СТРАНЫ ==========
+        function getCountryInfo() {
+            const lang = navigator.language || navigator.userLanguage || '';
+            const code = lang.toLowerCase();
+            if (code.includes('es-mx')) return { code: 'MX', name: 'México', flag: '🇲🇽' };
+            if (code.includes('es-co')) return { code: 'CO', name: 'Colombia', flag: '🇨🇴' };
+            if (code.includes('es-ar')) return { code: 'AR', name: 'Argentina', flag: '🇦🇷' };
+            if (code.includes('es-cl')) return { code: 'CL', name: 'Chile', flag: '🇨🇱' };
+            return { code: 'LATAM', name: 'México y Colombia', flag: '🌎' };
+        }
+        const userCountry = getCountryInfo();
+
+        // ========== ТРИ ВОПРОСА ==========
+        const questions = [
+            {
+                title: "¿Con qué frecuencia realizas compras en línea o accedes a tu banca digital?",
+                options: [
+                    { text: "Todos los días", icon: "🛒", weight: 3 },
+                    { text: "Varias veces por semana", icon: "💳", weight: 2 },
+                    { text: "Casi nunca", icon: "🏦", weight: 1 }
+                ]
+            },
+            {
+                title: "¿Has notado que tu PC está más lenta o se calienta sin motivo aparente?",
+                options: [
+                    { text: "Sí, mucho últimamente", icon: "🐌", weight: 3 },
+                    { text: "Un poco, a veces", icon: "⏳", weight: 2 },
+                    { text: "No, todo normal", icon: "✅", weight: 0 }
+                ]
+            },
+            {
+                title: "¿Utilizas la misma contraseña para varias cuentas o servicios?",
+                options: [
+                    { text: "Sí, para casi todas", icon: "🔑", weight: 3 },
+                    { text: "Algunas se repiten", icon: "🔐", weight: 2 },
+                    { text: "No, cada una es única", icon: "🛡️", weight: 0 }
+                ]
             }
-            const targetBase = getTargetUrl();
+        ];
 
-            // Устанавливаем data-url для всех ссылок с классом btn-fix
-            document.querySelectorAll('.btn-fix').forEach(link => {
-                link.setAttribute('data-url', targetBase);
-                link.removeAttribute('onclick'); // убираем старые onclick, если были
-                link.style.cursor = 'pointer';
+        let currentStep = 0;
+        let totalWeight = 0;
+        const answers = [];
+
+        const progressBar = document.getElementById('progressBar');
+        const dynamicContent = document.getElementById('dynamicContent');
+
+        function renderQuestion(index) {
+            if (index >= questions.length) {
+                showAnalysis();
+                return;
+            }
+            const q = questions[index];
+            progressBar.style.width = ((index / questions.length) * 100) + '%';
+
+            let html = `<div class="step-title">${q.title}</div><div class="options">`;
+            q.options.forEach((opt) => {
+                html += `
+                    <div class="option-btn" data-weight="${opt.weight}" data-answer="${opt.text}">
+                        <span class="icon">${opt.icon}</span>
+                        <span>${opt.text}</span>
+                    </div>
+                `;
             });
+            html += `</div>`;
+            dynamicContent.innerHTML = html;
 
-            // ----- 2. Управление beforeunload (предупреждение только при закрытии/обновлении) -----
-            let isNavigating = false;
-            const beforeUnloadHandler = function(e) {
-                if (isNavigating) return; // при клике на ссылку не показываем
-                const message = '¿Estás seguro de que quieres salir? Tu PC puede estar en riesgo.';
-                e.preventDefault();
-                e.returnValue = message;
-                return message;
-            };
-            window.addEventListener('beforeunload', beforeUnloadHandler);
-
-            // ----- 3. Функция безопасного перехода (без предупреждения) -----
-            function safeNavigate(url) {
-                if (!url) return;
-                isNavigating = true;
-                // Удаляем обработчик beforeunload перед переходом
-                window.removeEventListener('beforeunload', beforeUnloadHandler);
-                // Выполняем переход
-                window.location.href = url;
-                // Если по какой-то причине переход не состоялся (например, тот же URL),
-                // восстанавливаем обработчик через 300 мс и сбрасываем флаг
-                setTimeout(() => {
-                    window.addEventListener('beforeunload', beforeUnloadHandler);
-                    isNavigating = false;
-                }, 300);
-            }
-
-            // Навешиваем обработчики кликов на все .btn-fix
-            document.querySelectorAll('.btn-fix').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const url = this.getAttribute('data-url');
-                    if (url) safeNavigate(url);
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('btn-disabled')) return;
+                    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const weight = parseInt(this.dataset.weight);
+                    totalWeight += weight;
+                    answers.push({
+                        question: q.title,
+                        answer: this.dataset.answer,
+                        weight: weight
+                    });
+                    document.querySelectorAll('.option-btn').forEach(b => b.classList.add('btn-disabled'));
+                    setTimeout(() => {
+                        currentStep++;
+                        renderQuestion(currentStep);
+                    }, 300);
                 });
             });
+        }
 
-            // ----- 4. Подстановка текущей даты -----
-            function getCurrentDateFormattedMX() {
-                const now = new Date();
-                const day = now.getDate();
-                const month = now.getMonth() + 1;
-                const year = now.getFullYear();
-                return `${day}.${month}.${year}`;
-            }
-            const dateSpan = document.getElementById('currentDate');
-            if (dateSpan) dateSpan.textContent = getCurrentDateFormattedMX();
-        })();
+        function showAnalysis() {
+            progressBar.style.width = '100%';
+            dynamicContent.innerHTML = `
+                <div class="loader">
+                    <div class="spinner"></div>
+                    <p style="color:#ccc;">Analizando tus respuestas...</p>
+                    <p style="font-size:0.8rem; color:#888;">Verificando riesgos de seguridad</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const riskLevel = totalWeight >= 8 ? 'ALTO' : totalWeight >= 5 ? 'MEDIO' : 'BAJO';
+                let threats = [];
+                if (totalWeight >= 7) {
+                    threats = [
+                        "🔴 Posible robo de datos bancarios y contraseñas.",
+                        "🔴 Programas no deseados que rastrean tu actividad.",
+                        "🔴 Riesgo de suplantación de identidad (phishing)."
+                    ];
+                } else if (totalWeight >= 4) {
+                    threats = [
+                        "🟠 Tu información personal podría estar expuesta en redes públicas.",
+                        "🟠 Se detectaron comportamientos inusuales en segundo plano.",
+                        "🟠 Vulnerabilidades en contraseñas repetidas."
+                    ];
+                } else {
+                    threats = [
+                        "🟢 No se detectaron amenazas graves, pero tu equipo podría estar desprotegido ante ataques futuros.",
+                        "🟢 La ausencia de síntomas no garantiza seguridad total."
+                    ];
+                }
+
+                let html = `
+                    <div class="result-box">
+                        <div class="risk-level">RIESGO ${riskLevel}</div>
+                        <p style="font-size:1rem; margin-bottom:8px;">Según tus respuestas, tu PC presenta:</p>
+                        <ul class="threat-list">
+                            ${threats.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div style="text-align:center; margin-top:12px;">
+                        <p style="font-weight:500; margin-bottom:4px;">🧑‍💻 <strong>435 millones de usuarios</strong> confían en Avast</p>
+                        <p style="font-size:0.9rem; color:#ccc;">Premio a la mejor protección 2025 según AV-Comparatives</p>
+                    </div>
+                    <a href="${OFFER_URL}" class="cta-button" id="ctaButton" target="_blank">
+                        Activar Avast Premium <span class="discount-badge">-60% HOY</span>
+                    </a>
+                    <p class="timer" id="timerText">⏳ Oferta válida por tiempo limitado: <span id="countdown">05:00</span></p>
+                    <p style="font-size:0.9rem; text-align:center; margin-top:16px; color:#ddd;">
+                        🌎 Oferta exclusiva para residentes de ${userCountry.flag} ${userCountry.name}
+                    </p>
+                `;
+                dynamicContent.innerHTML = html;
+                startCountdown();
+
+                // 🔥 Раскомментируй, если нужен постбек при клике
+                /*
+                document.getElementById('ctaButton').addEventListener('click', function() {
+                    const img = new Image();
+                    img.src = POSTBACK_URL;
+                    img.style.display = 'none';
+                    document.body.appendChild(img);
+                });
+                */
+            }, 2500);
+        }
+
+        function startCountdown() {
+            let time = 300;
+            const countdownEl = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                time--;
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                countdownEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (time <= 0) {
+                    clearInterval(interval);
+                    countdownEl.textContent = "00:00";
+                    document.getElementById('timerText').innerHTML = "⚠️ La oferta ha expirado. Actualiza la página para verificar disponibilidad.";
+                }
+            }, 1000);
+        }
+
+        // ========== ЗАПУСК ==========
+        renderQuestion(0);
     </script>
 </body>
 </html>

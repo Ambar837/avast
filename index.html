@@ -214,6 +214,22 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .geo-display {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            background: rgba(255,255,255,0.08);
+            display: inline-block;
+            width: auto;
+            padding: 5px 12px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+        }
+        .geo-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
         @media (max-width: 500px) {
             .quiz-container {
                 padding: 28px 20px;
@@ -228,100 +244,209 @@
     <!-- Пиксель трекинга (загрузка страницы) -->
     <img src="https://mqglly.abadit5rckb.com/trackpixel/track?tid=:cid&amt=:payout" width="1" height="1" style="display:none;" />
 
-    <!-- iFrame пиксель (замени YOUR_NETWORK_TOKEN и параметры) -->
+    <!-- iFrame пиксель -->
     <iframe width="1" height="1" border="0" style="display: none;" src="http://abpostback.com/pixel/script?tid=YOUR_NETWORK_TOKEN&amt=REPLACE&txid=REPLACE&status=REPLACE"></iframe>
 
     <div class="quiz-container" id="quizContainer">
-        <!-- Логотип Avast (PNG) -->
         <div class="avast-logo">
             <img src="img/logo1200.png" alt="Avast Logo">
             <span>Avast</span>
         </div>
 
-        <!-- Прогресс-бар -->
         <div class="progress">
             <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
         </div>
 
-        <!-- Динамический контент -->
         <div id="dynamicContent"></div>
     </div>
 
     <script>
-        // ========== НАСТРОЙКИ ==========
+        // ========== НАСТРОЙКИ (не меняем) ==========
         const OFFER_URL = 'https://ahyiu.com/af?o=3d75bdd2185e766f096a8a2ca6b5af18:8199ee3f3e8cb18083e4093a748b0510&cid=&subid=';
-        // ❗ Замени пустые cid и subid на макросы своей ПП
-
-        // Постбек-URL (для клика, если нужно)
         const POSTBACK_URL = 'https://mqglly.abadit5rckb.com/trackpixel/track?tid=:cid&amt=:payout';
 
-        // ========== ОПРЕДЕЛЕНИЕ СТРАНЫ ==========
-        function getCountryInfo() {
-            const lang = navigator.language || navigator.userLanguage || '';
-            const code = lang.toLowerCase();
-            if (code.includes('es-mx')) return { code: 'MX', name: 'México', flag: '🇲🇽' };
-            if (code.includes('es-co')) return { code: 'CO', name: 'Colombia', flag: '🇨🇴' };
-            if (code.includes('es-ar')) return { code: 'AR', name: 'Argentina', flag: '🇦🇷' };
-            if (code.includes('es-cl')) return { code: 'CL', name: 'Chile', flag: '🇨🇱' };
-            return { code: 'LATAM', name: 'México y Colombia', flag: '🌎' };
-        }
-        const userCountry = getCountryInfo();
-
-        // ========== ТРИ ВОПРОСА ==========
-        const questions = [
-            {
-                title: "¿Con qué frecuencia realizas compras en línea o accedes a tu banca digital?",
-                options: [
-                    { text: "Todos los días", icon: "🛒", weight: 3 },
-                    { text: "Varias veces por semana", icon: "💳", weight: 2 },
-                    { text: "Casi nunca", icon: "🏦", weight: 1 }
-                ]
-            },
-            {
-                title: "¿Has notado que tu PC está más lenta o se calienta sin motivo aparente?",
-                options: [
-                    { text: "Sí, mucho últimamente", icon: "🐌", weight: 3 },
-                    { text: "Un poco, a veces", icon: "⏳", weight: 2 },
-                    { text: "No, todo normal", icon: "✅", weight: 0 }
-                ]
-            },
-            {
-                title: "¿Utilizas la misma contraseña para varias cuentas o servicios?",
-                options: [
-                    { text: "Sí, para casi todas", icon: "🔑", weight: 3 },
-                    { text: "Algunas se repiten", icon: "🔐", weight: 2 },
-                    { text: "No, cada una es única", icon: "🛡️", weight: 0 }
-                ]
-            }
-        ];
-
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let currentLanguage = 'es';     // 'es' o 'pt'
+        let userGeoCode = 'UNKNOWN';
+        let userGeoName = 'Internacional';
         let currentStep = 0;
         let totalWeight = 0;
-        const answers = [];
+        let answers = [];
 
-        const progressBar = document.getElementById('progressBar');
-        const dynamicContent = document.getElementById('dynamicContent');
+        // ========== МУЛЬТИЯЗЫЧНЫЕ СТРОКИ ==========
+        const translations = {
+            es: {
+                loadingGeo: "Detectando tu región...",
+                questions: [
+                    "¿Con qué frecuencia realizas compras en línea o accedes a tu banca digital?",
+                    "¿Has notado que tu PC está más lenta o se calienta sin motivo aparente?",
+                    "¿Utilizas la misma contraseña para varias cuentas o servicios?"
+                ],
+                options: [
+                    ["Todos los días", "Varias veces por semana", "Casi nunca"],
+                    ["Sí, mucho últimamente", "Un poco, a veces", "No, todo normal"],
+                    ["Sí, para casi todas", "Algunas se repiten", "No, cada una es única"]
+                ],
+                optionIcons: [["🛒", "💳", "🏦"], ["🐌", "⏳", "✅"], ["🔑", "🔐", "🛡️"]],
+                optionWeights: [[3,2,1], [3,2,0], [3,2,0]],
+                loader: {
+                    analyzing: "Analizando tus respuestas...",
+                    verifying: "Verificando riesgos de seguridad"
+                },
+                riskPrefix: "RIESGO",
+                riskLevels: { high: "ALTO", medium: "MEDIO", low: "BAJO" },
+                threatLists: {
+                    high: [
+                        "🔴 Posible robo de datos bancarios y contraseñas.",
+                        "🔴 Programas no deseados que rastrean tu actividad.",
+                        "🔴 Riesgo de suplantación de identidad (phishing)."
+                    ],
+                    medium: [
+                        "🟠 Tu información personal podría estar expuesta en redes públicas.",
+                        "🟠 Se detectaron comportamientos inusuales en segundo plano.",
+                        "🟠 Vulnerabilidades en contraseñas repetidas."
+                    ],
+                    low: [
+                        "🟢 No se detectaron amenazas graves, pero tu equipo podría estar desprotegido ante ataques futuros.",
+                        "🟢 La ausencia de síntomas no garantiza seguridad total."
+                    ]
+                },
+                trustText: "🧑‍💻 <strong>435 millones de usuarios</strong> confían en Avast",
+                awardText: "Premio a la mejor protección 2025 según AV-Comparatives",
+                buttonText: "Activar Avast Premium",
+                discountBadge: "-60% HOY",
+                timerPrefix: "⏳ Oferta válida por tiempo limitado: ",
+                exclusivePrefix: "🌎 Oferta exclusiva para residentes de ",
+                geoLabel: "📍 Tu ubicación:"
+            },
+            pt: {
+                loadingGeo: "Detectando sua região...",
+                questions: [
+                    "Com que frequência você faz compras online ou acessa seu banco digital?",
+                    "Você notou que seu PC está mais lento ou superaquece sem motivo aparente?",
+                    "Você usa a mesma senha para várias contas ou serviços?"
+                ],
+                options: [
+                    ["Todos os dias", "Várias vezes por semana", "Quase nunca"],
+                    ["Sim, muito ultimamente", "Um pouco, às vezes", "Não, tudo normal"],
+                    ["Sim, para quase todas", "Algumas se repetem", "Não, cada uma é única"]
+                ],
+                optionIcons: [["🛒", "💳", "🏦"], ["🐌", "⏳", "✅"], ["🔑", "🔐", "🛡️"]],
+                optionWeights: [[3,2,1], [3,2,0], [3,2,0]],
+                loader: {
+                    analyzing: "Analisando suas respostas...",
+                    verifying: "Verificando riscos de segurança"
+                },
+                riskPrefix: "RISCO",
+                riskLevels: { high: "ALTO", medium: "MÉDIO", low: "BAIXO" },
+                threatLists: {
+                    high: [
+                        "🔴 Possível roubo de dados bancários e senhas.",
+                        "🔴 Programas indesejados que rastreiam sua atividade.",
+                        "🔴 Risco de roubo de identidade (phishing)."
+                    ],
+                    medium: [
+                        "🟠 Suas informações pessoais podem estar expostas em redes públicas.",
+                        "🟠 Comportamentos incomuns detectados em segundo plano.",
+                        "🟠 Vulnerabilidades em senhas repetidas."
+                    ],
+                    low: [
+                        "🟢 Nenhuma ameaça grave detectada, mas seu computador pode estar desprotegido contra ataques futuros.",
+                        "🟢 A ausência de sintomas não garante segurança total."
+                    ]
+                },
+                trustText: "🧑‍💻 <strong>435 milhões de usuários</strong> confiam na Avast",
+                awardText: "Prêmio de melhor proteção 2025 pela AV-Comparatives",
+                buttonText: "Ativar Avast Premium",
+                discountBadge: "-60% HOJE",
+                timerPrefix: "⏳ Oferta válida por tempo limitado: ",
+                exclusivePrefix: "🌎 Oferta exclusiva para residentes do ",
+                geoLabel: "📍 Sua localização:"
+            }
+        };
 
+        // ========== GEO DETECCIÓN (IP + FALLBACK) sin animación ==========
+        async function detectUserGeo() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                if (!response.ok) throw new Error('GeoAPI error');
+                const data = await response.json();
+                const countryCode = data.country_code;
+                const countryName = data.country_name;
+                return { code: countryCode, name: countryName };
+            } catch (error) {
+                console.warn("Fallo geolocalización por IP, usando fallback por idioma");
+                const lang = navigator.language || navigator.userLanguage || '';
+                if (lang.toLowerCase().startsWith('pt')) {
+                    return { code: 'BR', name: 'Brasil' };
+                }
+                let fallbackName = "Latinoamérica";
+                let fallbackCode = "LATAM";
+                if (lang.includes('es-MX')) { fallbackName = "México"; fallbackCode = "MX"; }
+                else if (lang.includes('es-AR')) { fallbackName = "Argentina"; fallbackCode = "AR"; }
+                else if (lang.includes('es-CO')) { fallbackName = "Colombia"; fallbackCode = "CO"; }
+                else if (lang.includes('es-CL')) { fallbackName = "Chile"; fallbackCode = "CL"; }
+                else if (lang.includes('es-ES')) { fallbackName = "España"; fallbackCode = "ES"; }
+                return { code: fallbackCode, name: fallbackName };
+            }
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ БЕЗ АНИМАЦИИ ==========
+        async function initQuiz() {
+            // 1. Определяем гео (фоном, без спиннера и сообщений)
+            const geoData = await detectUserGeo();
+            userGeoCode = geoData.code;
+            userGeoName = geoData.name;
+            
+            // 2. Выбираем язык: португальский только для Бразилии
+            if (userGeoCode === 'BR') {
+                currentLanguage = 'pt';
+            } else {
+                currentLanguage = 'es';
+            }
+            
+            // 3. Сразу запускаем викторину (первый вопрос) — без анимаций загрузки региона
+            startQuiz();
+        }
+        
+        function startQuiz() {
+            // Сброс состояния викторины
+            currentStep = 0;
+            totalWeight = 0;
+            answers = [];
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) progressBar.style.width = '0%';
+            renderQuestion(0);
+        }
+        
+        // ========== ОТРИСОВКА ВОПРОСА (мультиязык) ==========
         function renderQuestion(index) {
-            if (index >= questions.length) {
+            const t = translations[currentLanguage];
+            if (index >= t.questions.length) {
                 showAnalysis();
                 return;
             }
-            const q = questions[index];
-            progressBar.style.width = ((index / questions.length) * 100) + '%';
-
-            let html = `<div class="step-title">${q.title}</div><div class="options">`;
-            q.options.forEach((opt) => {
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = ((index / t.questions.length) * 100) + '%';
+            
+            const questionText = t.questions[index];
+            const opts = t.options[index];
+            const icons = t.optionIcons[index];
+            const weights = t.optionWeights[index];
+            
+            let html = `<div class="step-title">${questionText}</div><div class="options">`;
+            for (let i = 0; i < opts.length; i++) {
                 html += `
-                    <div class="option-btn" data-weight="${opt.weight}" data-answer="${opt.text}">
-                        <span class="icon">${opt.icon}</span>
-                        <span>${opt.text}</span>
+                    <div class="option-btn" data-weight="${weights[i]}" data-answer="${opts[i]}">
+                        <span class="icon">${icons[i]}</span>
+                        <span>${opts[i]}</span>
                     </div>
                 `;
-            });
+            }
             html += `</div>`;
-            dynamicContent.innerHTML = html;
-
+            document.getElementById('dynamicContent').innerHTML = html;
+            
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (this.classList.contains('btn-disabled')) return;
@@ -330,7 +455,7 @@
                     const weight = parseInt(this.dataset.weight);
                     totalWeight += weight;
                     answers.push({
-                        question: q.title,
+                        question: t.questions[currentStep],
                         answer: this.dataset.answer,
                         weight: weight
                     });
@@ -342,92 +467,99 @@
                 });
             });
         }
-
+        
+        // ========== ФИНАЛЬНЫЙ АНАЛИЗ + ВЫВОД ГЕО ПОД КНОПКОЙ ==========
         function showAnalysis() {
+            const dynamicDiv = document.getElementById('dynamicContent');
+            const t = translations[currentLanguage];
+            const progressBar = document.getElementById('progressBar');
             progressBar.style.width = '100%';
-            dynamicContent.innerHTML = `
+            
+            // Показываем кратковременный лоадер для анализа ответов (это не анимация региона, а обработка ответов)
+            dynamicDiv.innerHTML = `
                 <div class="loader">
                     <div class="spinner"></div>
-                    <p style="color:#ccc;">Analizando tus respuestas...</p>
-                    <p style="font-size:0.8rem; color:#888;">Verificando riesgos de seguridad</p>
+                    <p style="color:#ccc;">${t.loader.analyzing}</p>
+                    <p style="font-size:0.8rem; color:#888;">${t.loader.verifying}</p>
                 </div>
             `;
-
+            
             setTimeout(() => {
-                const riskLevel = totalWeight >= 8 ? 'ALTO' : totalWeight >= 5 ? 'MEDIO' : 'BAJO';
+                let riskKey = 'low';
+                if (totalWeight >= 8) riskKey = 'high';
+                else if (totalWeight >= 5) riskKey = 'medium';
+                else riskKey = 'low';
+                
+                const riskLevelText = t.riskLevels[riskKey];
                 let threats = [];
-                if (totalWeight >= 7) {
-                    threats = [
-                        "🔴 Posible robo de datos bancarios y contraseñas.",
-                        "🔴 Programas no deseados que rastrean tu actividad.",
-                        "🔴 Riesgo de suplantación de identidad (phishing)."
-                    ];
-                } else if (totalWeight >= 4) {
-                    threats = [
-                        "🟠 Tu información personal podría estar expuesta en redes públicas.",
-                        "🟠 Se detectaron comportamientos inusuales en segundo plano.",
-                        "🟠 Vulnerabilidades en contraseñas repetidas."
-                    ];
-                } else {
-                    threats = [
-                        "🟢 No se detectaron amenazas graves, pero tu equipo podría estar desprotegido ante ataques futuros.",
-                        "🟢 La ausencia de síntomas no garantiza seguridad total."
-                    ];
+                if (riskKey === 'high') threats = t.threatLists.high;
+                else if (riskKey === 'medium') threats = t.threatLists.medium;
+                else threats = t.threatLists.low;
+                
+                // Формируем текст эксклюзивного предложения с учётом гео
+                let exclusiveRegionText = `${t.exclusivePrefix}${userGeoName}`;
+                if (currentLanguage === 'pt' && userGeoCode === 'BR') {
+                    exclusiveRegionText = `${t.exclusivePrefix}Brasil`;
                 }
-
-                let html = `
+                
+                // Отображение гео под кнопкой (как и требовалось)
+                const geoDisplayHtml = `
+                    <div class="geo-wrapper">
+                        <div class="geo-display">
+                            ${t.geoLabel} ${userGeoName} ${(userGeoCode === 'BR' ? '🇧🇷' : (userGeoCode === 'MX' ? '🇲🇽' : (userGeoCode === 'CO' ? '🇨🇴' : '🌍')))}
+                        </div>
+                    </div>
+                `;
+                
+                const html = `
                     <div class="result-box">
-                        <div class="risk-level">RIESGO ${riskLevel}</div>
-                        <p style="font-size:1rem; margin-bottom:8px;">Según tus respuestas, tu PC presenta:</p>
+                        <div class="risk-level">${t.riskPrefix} ${riskLevelText}</div>
+                        <p style="font-size:1rem; margin-bottom:8px;">${currentLanguage === 'es' ? 'Según tus respuestas, tu PC presenta:' : 'De acordo com suas respostas, seu PC apresenta:'}</p>
                         <ul class="threat-list">
-                            ${threats.map(t => `<li>${t}</li>`).join('')}
+                            ${threats.map(threat => `<li>${threat}</li>`).join('')}
                         </ul>
                     </div>
                     <div style="text-align:center; margin-top:12px;">
-                        <p style="font-weight:500; margin-bottom:4px;">🧑‍💻 <strong>435 millones de usuarios</strong> confían en Avast</p>
-                        <p style="font-size:0.9rem; color:#ccc;">Premio a la mejor protección 2025 según AV-Comparatives</p>
+                        <p style="font-weight:500; margin-bottom:4px;">${t.trustText}</p>
+                        <p style="font-size:0.9rem; color:#ccc;">${t.awardText}</p>
                     </div>
                     <a href="${OFFER_URL}" class="cta-button" id="ctaButton" target="_blank">
-                        Activar Avast Premium <span class="discount-badge">-60% HOY</span>
+                        ${t.buttonText} <span class="discount-badge">${t.discountBadge}</span>
                     </a>
-                    <p class="timer" id="timerText">⏳ Oferta válida por tiempo limitado: <span id="countdown">05:00</span></p>
+                    ${geoDisplayHtml}
+                    <p class="timer" id="timerText">${t.timerPrefix}<span id="countdown">05:00</span></p>
                     <p style="font-size:0.9rem; text-align:center; margin-top:16px; color:#ddd;">
-                        🌎 Oferta exclusiva para residentes de ${userCountry.flag} ${userCountry.name}
+                        ${exclusiveRegionText}
                     </p>
                 `;
-                dynamicContent.innerHTML = html;
+                dynamicDiv.innerHTML = html;
                 startCountdown();
-
-                // 🔥 Раскомментируй, если нужен постбек при клике
-                /*
-                document.getElementById('ctaButton').addEventListener('click', function() {
-                    const img = new Image();
-                    img.src = POSTBACK_URL;
-                    img.style.display = 'none';
-                    document.body.appendChild(img);
-                });
-                */
             }, 2500);
         }
-
+        
         function startCountdown() {
             let time = 300;
             const countdownEl = document.getElementById('countdown');
+            if (!countdownEl) return;
             const interval = setInterval(() => {
+                if (time <= 0) {
+                    clearInterval(interval);
+                    if (countdownEl) countdownEl.textContent = "00:00";
+                    const timerTextSpan = document.getElementById('timerText');
+                    if (timerTextSpan) {
+                        timerTextSpan.innerHTML = currentLanguage === 'es' ? "⚠️ La oferta ha expirado. Actualiza la página para verificar disponibilidad." : "⚠️ A oferta expirou. Atualize a página para verificar disponibilidade.";
+                    }
+                    return;
+                }
                 time--;
                 const minutes = Math.floor(time / 60);
                 const seconds = time % 60;
-                countdownEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                if (time <= 0) {
-                    clearInterval(interval);
-                    countdownEl.textContent = "00:00";
-                    document.getElementById('timerText').innerHTML = "⚠️ La oferta ha expirado. Actualiza la página para verificar disponibilidad.";
-                }
+                if (countdownEl) countdownEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }, 1000);
         }
-
-        // ========== ЗАПУСК ==========
-        renderQuestion(0);
+        
+        // ========== ЗАПУСК (без анимации региона) ==========
+        initQuiz();
     </script>
 </body>
 </html>
